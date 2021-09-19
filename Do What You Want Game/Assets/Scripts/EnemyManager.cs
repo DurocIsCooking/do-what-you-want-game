@@ -24,24 +24,52 @@ public class EnemyManager : MonoBehaviour
     private RangeAttribute _spawnRangeY;
 
     // Used to control frequency of enemy spawns
-    [SerializeField]
     private static float _spawnInterval;
     private float _spawnTimer;
+    [SerializeField]
+    private GameObject _spawnZoneIndicator;
 
-    // Getters & setters
-    public static float enemySpeed
+    // Getters & setters (we want to change these values as the player scores points, to increase difficulty)
+    public static float EnemySpeed
     {
         get
         {
             return _enemySpeed;
         }
+
+        set
+        {
+            _enemySpeed = value;
+        }
     }
 
-    public static float maximumEnemyRotation
+    public static float EnemyRotationSpeed
     {
         get
         {
             return _enemyRotationSpeed;
+        }
+
+        set
+        {
+            _enemyRotationSpeed = value;
+        }
+    }
+
+    public static float SpawnInterval
+    {
+        get
+        {
+            return _spawnInterval;
+        }
+
+        set
+        {
+            _spawnInterval = value;
+
+            // We never want spawn interval to go below 0.25
+            if (_spawnInterval < 0.25f)
+                _spawnInterval = 0.25f;
         }
     }
 
@@ -80,8 +108,7 @@ public class EnemyManager : MonoBehaviour
 
         // Set enemy speed values
         _enemySpeed = 0.2f;
-        //_enemySpeed = 0.2f;
-        _enemyRotationSpeed = 1f;
+        _enemyRotationSpeed = 2f;
 
         // Find player
         _player = GameObject.Find("Player");
@@ -97,14 +124,22 @@ public class EnemyManager : MonoBehaviour
         if(_spawnTimer >= _spawnInterval)
         {
             _spawnTimer = 0;
-            SpawnEnemy();
+
+            if(player != null)
+            {
+                BeginEnemySpawn();
+            }
+            
         }
     }
 
-    private void SpawnEnemy()
+    private void BeginEnemySpawn()
     {
         // For this, we divide the level into nine spawn zones
         // This is to make sure enemies do not spawn on top of the player
+
+            // In hindsight, instead of dividing the level like this, I would have checked to see whether the spawn location were within a certain radius of the player
+            // The problem is enemies can still spawn very close to a player near the edge of a spawn zone
 
         // Select random spawn zone
         int spawnZone = (int)Random.Range(0, 9);
@@ -141,16 +176,24 @@ public class EnemyManager : MonoBehaviour
         if (player.transform.position.x > _spawnRangeX.min && player.transform.position.x < _spawnRangeX.max && player.transform.position.y > _spawnRangeY.min && player.transform.position.y < _spawnRangeY.max)
         {
             // If so, we need to select a different spawnzone
-            SpawnEnemy();
+            BeginEnemySpawn();
             return;
         }
 
+        // Telegraph spawn zone to player with indicator
+        Instantiate(_spawnZoneIndicator, new Vector3(_spawnRangeX.min + 0.5f * _spawnZoneWidth, _spawnRangeY.min + 0.5f * _spawnZoneHeight, 0), Quaternion.identity);
+
+        // Spawn enemy after delay
+        Invoke("SpawnEnemy", _spawnInterval - 0.05f);
+    }
+
+    private void SpawnEnemy()
+    {
         // Set spawn position within selected range
         _spawnPosX = Random.Range(_spawnRangeX.min, _spawnRangeX.max);
         _spawnPosY = Random.Range(_spawnRangeY.min, _spawnRangeY.max);
         // Spawn enemy
         Instantiate(_enemy, new Vector3(_spawnPosX, _spawnPosY, 0), Quaternion.identity);
-
     }
 
     

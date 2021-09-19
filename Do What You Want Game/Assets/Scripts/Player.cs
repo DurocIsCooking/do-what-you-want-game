@@ -118,6 +118,18 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        // Die
+        // If the player touches an explosion, game over
+        ScoreManager.GameOver();
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        // If the player is hit by a missile, game over
+        if (col.collider.tag == "Enemy")
+        {
+            ScoreManager.GameOver();
+            Destroy(gameObject);
+        }
     }
 }

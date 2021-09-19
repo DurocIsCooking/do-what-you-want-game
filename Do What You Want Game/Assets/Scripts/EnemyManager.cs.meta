@@ -5,6 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _enemy: {fileID: 4815146272520533331, guid: ccb0024034c4da14bb33c63415780e3c, type: 3}
+  - _spawnZoneIndicator: {fileID: 5424710437925108082, guid: 1d64662c3d4e4af44ab47081da0dd2ca, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

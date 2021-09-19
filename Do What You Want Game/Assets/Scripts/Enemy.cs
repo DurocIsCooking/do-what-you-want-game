@@ -28,8 +28,8 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         _movementTarget = gameObject.transform.GetChild(0);
-        _movementSpeed = EnemyManager.enemySpeed;
-        _rotationSpeed = EnemyManager.maximumEnemyRotation;
+        _movementSpeed = EnemyManager.EnemySpeed;
+        _rotationSpeed = EnemyManager.EnemyRotationSpeed;
         _player = EnemyManager.player;
 
         // Spawn the enemy facing a random direction
@@ -39,10 +39,14 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         // Rotate towards player
-        Vector2 direction = _player.transform.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
+        if(_player != null)
+        {
+            Vector2 direction = _player.transform.position - transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, _rotationSpeed * Time.deltaTime);
+        }
+        
     }
 
     private void FixedUpdate()
@@ -64,8 +68,11 @@ public class Enemy : MonoBehaviour
 
     private void Explode()
     {
-        // score++
+        // Increment score
+        ScoreManager.ScoreText = ScoreManager.ScoreText + 1;
+        // Spawn explosion
         Instantiate(_explosion, transform.position, Quaternion.identity);
+        // Destroy enemy
         Destroy(gameObject);
     }
 

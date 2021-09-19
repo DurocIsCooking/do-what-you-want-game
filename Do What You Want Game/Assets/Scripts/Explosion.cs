@@ -21,6 +21,7 @@ public class Explosion : MonoBehaviour
 
     private void Awake()
     {
+        // Randomly determine explosion size within a range
         _radius = Random.Range(_minRadius, _maxRadius);
     }
 
