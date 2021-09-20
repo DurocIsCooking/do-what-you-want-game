@@ -6,9 +6,6 @@ Controls:
 
 WASD - move
 
-Space - restart game (this works even during the game. It's for the sake of convenience)
-
-
 Singleton pattern is found in these scripts:
 
 ScoreManager
