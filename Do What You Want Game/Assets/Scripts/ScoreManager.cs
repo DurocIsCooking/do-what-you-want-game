@@ -28,10 +28,11 @@ public class ScoreManager : MonoBehaviour
 
 
     // Text elements
-    private static Text _scoreText;
     private static int _score;
 
-    public static int ScoreText
+    public static Text _gameOverText;
+
+    public static int Score
     {
         get
         {
@@ -43,51 +44,47 @@ public class ScoreManager : MonoBehaviour
             // Increase score
             _score = value;
             // Display score
-            _scoreText.text = "Score: " + _score;
-            
+
+            UIManager.ScoreText = "Score: " + _score;
+
+
             //At certain intervals, increase difficulty
-            if(_score%10 == 5)
+            if (_score == 5 || _score == 15 || _score == 30)
             {
                 // Make enemies spawn more quickly
                 EnemyManager.SpawnInterval = EnemyManager.SpawnInterval - 1.5f;
+                UIManager.UpgradeText = "Enemy spawn rate increased!";
             }
 
-            if(_score%10 == 0)
+            if (_score == 25 || _score == 50)
+            {
+                // Increase explosion size
+                Explosion.UpgradeExplosion();
+                UIManager.UpgradeText = "Explosion size increased!";
+            }
+
+            if (_score == 10)
             {
                 // Make enemies more maneuverable
                 EnemyManager.EnemyRotationSpeed = EnemyManager.EnemyRotationSpeed + 1f;
+
+                UIManager.UpgradeText = "Enemy maneuverability increased!";
+            }
+
+            if (_score == 20 || _score == 100)
+            {
+                // Increase enemy speed
+                EnemyManager.EnemySpeed = EnemyManager.EnemySpeed + 0.1f;
+                UIManager.UpgradeText = "Enemy speed increased!";
             }
         }
     }
-
-
-
-    public static Text _gameOverText;
-   
 
     private void Awake()
     {
         // Singleton
         _instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        // Find and set text elements
-        _scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
-        _scoreText.text = "Score: " + 0;
-
-        _gameOverText = GameObject.Find("GameOverText").GetComponent<Text>();
-        _gameOverText.text = "Game over!";
-        _gameOverText.enabled = false;
-    }
-
-
-    public static void GameOver()
-    {
-        // Remove score text
-        _scoreText.text = "";
-        // use DOTween to fade in gameover text
-        _gameOverText.enabled = true;
-        _gameOverText.text += "\nFinal score: " + _score;
+        DontDestroyOnLoad(gameObject);   
     }
 
 }

@@ -57,8 +57,38 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if(col.collider.tag != "Wall")
+        if (col.collider.tag != "Wall")
+        {
             Explode();
+        }
+        else
+        {
+            // Find enemy's current angle
+            Vector2 direction = _movementTarget.position - transform.position;
+            float incidentAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            // Bounce enemy away from wall
+            if (col.collider.name == "RightWall")
+            {
+                transform.RotateAround(transform.position, new Vector3(0, 0, 1), 180 - incidentAngle);
+            }
+
+            if (col.collider.name == "LeftWall")
+            {
+                transform.RotateAround(transform.position, new Vector3(0, 0, 1), 0 - incidentAngle);
+            }
+
+            if (col.collider.name == "TopWall")
+            {
+                transform.RotateAround(transform.position, new Vector3(0, 0, 1), -90 - incidentAngle);
+            }
+
+            if (col.collider.name == "BotWall")
+            {
+                transform.RotateAround(transform.position, new Vector3(0, 0, 1), 90 - incidentAngle);
+            }
+        }
+        
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -69,7 +99,7 @@ public class Enemy : MonoBehaviour
     private void Explode()
     {
         // Increment score
-        ScoreManager.ScoreText = ScoreManager.ScoreText + 1;
+        ScoreManager.Score = ScoreManager.Score + 1;
         // Spawn explosion
         Instantiate(_explosion, transform.position, Quaternion.identity);
         // Destroy enemy

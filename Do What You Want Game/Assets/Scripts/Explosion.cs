@@ -6,24 +6,23 @@ using DG.Tweening;
 public class Explosion : MonoBehaviour
 {
 
-    
-    private float _radius;
-    [SerializeField]
-    private float _minRadius;
-    [SerializeField]
-    private float _maxRadius;
-
     private float _explosionDuration = 2;
-
+    private float _implosionDuration = 1;
     private float _explosionTimer = 0;
-
+    private float _implosionTimer = 0;
     private bool _hasExploded = false;
+    private bool _hasImploded = false;
+
+    private float _radius;
+    private static float _minRadius = 5;
+    private static float _maxRadius = 8;
 
     private void Awake()
     {
         // Randomly determine explosion size within a range
         _radius = Random.Range(_minRadius, _maxRadius);
     }
+
 
     private void Update()
     {
@@ -38,9 +37,34 @@ public class Explosion : MonoBehaviour
             _explosionTimer += Time.deltaTime;
             if(_explosionTimer >= _explosionDuration)
             {
-                Destroy(gameObject);
+                Implosion();
             }
         }
         
+    }
+
+    private void Implosion()
+    {
+        // Use dotween for implosion rate
+        if (_hasImploded == false)
+        {
+            transform.DOScale(0, _implosionDuration);
+            _hasImploded = true;
+        }
+        else
+        {
+            _implosionTimer += Time.deltaTime;
+            if (_implosionTimer >= _implosionDuration)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    public static void UpgradeExplosion()
+    {
+        // Increase explosion radius
+        _minRadius += 2;
+        _maxRadius += 2;
     }
 }

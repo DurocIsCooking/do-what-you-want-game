@@ -28,6 +28,7 @@ public class EnemyManager : MonoBehaviour
     private float _spawnTimer;
     [SerializeField]
     private GameObject _spawnZoneIndicator;
+    private GameObject _currentSpawnZone = null;
 
     // Getters & setters (we want to change these values as the player scores points, to increase difficulty)
     public static float EnemySpeed
@@ -67,9 +68,9 @@ public class EnemyManager : MonoBehaviour
         {
             _spawnInterval = value;
 
-            // We never want spawn interval to go below 0.25
-            if (_spawnInterval < 0.25f)
-                _spawnInterval = 0.25f;
+            // We never want spawn interval to go below 0.5
+            if (_spawnInterval < 0.5f)
+                _spawnInterval = 0.5f;
         }
     }
 
@@ -135,11 +136,12 @@ public class EnemyManager : MonoBehaviour
 
     private void BeginEnemySpawn()
     {
+        // If we're already in the process of spawning an enemy, we do not want to spawn more. Otherwise we can get bugs
+        if (_currentSpawnZone != null)
+            return;
+
         // For this, we divide the level into nine spawn zones
         // This is to make sure enemies do not spawn on top of the player
-
-            // In hindsight, instead of dividing the level like this, I would have checked to see whether the spawn location were within a certain radius of the player
-            // The problem is enemies can still spawn very close to a player near the edge of a spawn zone
 
         // Select random spawn zone
         int spawnZone = (int)Random.Range(0, 9);
@@ -181,7 +183,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         // Telegraph spawn zone to player with indicator
-        Instantiate(_spawnZoneIndicator, new Vector3(_spawnRangeX.min + 0.5f * _spawnZoneWidth, _spawnRangeY.min + 0.5f * _spawnZoneHeight, 0), Quaternion.identity);
+        _currentSpawnZone = Instantiate(_spawnZoneIndicator, new Vector3(_spawnRangeX.min + 0.5f * _spawnZoneWidth, _spawnRangeY.min + 0.5f * _spawnZoneHeight, 0), Quaternion.identity);
 
         // Spawn enemy after delay
         Invoke("SpawnEnemy", _spawnInterval - 0.05f);
@@ -194,7 +196,8 @@ public class EnemyManager : MonoBehaviour
         _spawnPosY = Random.Range(_spawnRangeY.min, _spawnRangeY.max);
         // Spawn enemy
         Instantiate(_enemy, new Vector3(_spawnPosX, _spawnPosY, 0), Quaternion.identity);
+        // Remove spawn zone
+        _currentSpawnZone = null;
     }
 
-    
 }

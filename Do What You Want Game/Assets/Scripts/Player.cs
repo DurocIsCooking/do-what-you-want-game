@@ -119,7 +119,10 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D col)
     {
         // If the player touches an explosion, game over
-        ScoreManager.GameOver();
+
+        // Game over UI
+        UIManager.GameOver();
+        // Destroy player
         Destroy(gameObject);
     }
 
@@ -128,7 +131,9 @@ public class Player : MonoBehaviour
         // If the player is hit by a missile, game over
         if (col.collider.tag == "Enemy")
         {
-            ScoreManager.GameOver();
+            // Game over UI
+            UIManager.GameOver();
+            // Destroy player
             Destroy(gameObject);
         }
     }
