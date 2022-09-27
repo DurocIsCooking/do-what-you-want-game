@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls the spawning of enemies, and stores their global variables (which change as the enemies get upgrades)
 public class EnemyManager : MonoBehaviour
 {
     // Enemy prefab and global variables
@@ -121,6 +122,7 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
+        // Periodically spawn enemies
         _spawnTimer += Time.deltaTime;
         if(_spawnTimer >= _spawnInterval)
         {
@@ -140,8 +142,7 @@ public class EnemyManager : MonoBehaviour
         if (_currentSpawnZone != null)
             return;
 
-        // For this, we divide the level into nine spawn zones
-        // This is to make sure enemies do not spawn on top of the player
+        // For this, we divide the level into nine spawn zones, each one is a rectangle
 
         // Select random spawn zone
         int spawnZone = (int)Random.Range(0, 9);
@@ -174,15 +175,15 @@ public class EnemyManager : MonoBehaviour
                 break;
         }
         
-        // Check if player is within selected spawnzone (it's not pretty).
+        // Check if player is within selected spawnzone
         if (player.transform.position.x > _spawnRangeX.min && player.transform.position.x < _spawnRangeX.max && player.transform.position.y > _spawnRangeY.min && player.transform.position.y < _spawnRangeY.max)
         {
-            // If so, we need to select a different spawnzone
+            // If so, we need to select a different spawnzone. We do not want the spawnzone to appear on top of the player, this is too difficult when the spawn rate is high.
             BeginEnemySpawn();
             return;
         }
 
-        // Telegraph spawn zone to player with indicator
+        // Signal spawn zone to player with indicator
         _currentSpawnZone = Instantiate(_spawnZoneIndicator, new Vector3(_spawnRangeX.min + 0.5f * _spawnZoneWidth, _spawnRangeY.min + 0.5f * _spawnZoneHeight, 0), Quaternion.identity);
 
         // Spawn enemy after delay

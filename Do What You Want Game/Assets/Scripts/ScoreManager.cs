@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Tracks score and calls upgrades
 public class ScoreManager : MonoBehaviour
 {
 
@@ -26,6 +27,12 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        // Singleton
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     // Text elements
     private static int _score;
@@ -43,10 +50,9 @@ public class ScoreManager : MonoBehaviour
         {
             // Increase score
             _score = value;
+
             // Display score
-
             UIManager.ScoreText = "Score: " + _score;
-
 
             //At certain intervals, increase difficulty
             if (_score == 5 || _score == 15 || _score == 30)
@@ -78,13 +84,6 @@ public class ScoreManager : MonoBehaviour
                 UIManager.UpgradeText = "Enemy speed increased!";
             }
         }
-    }
-
-    private void Awake()
-    {
-        // Singleton
-        _instance = this;
-        DontDestroyOnLoad(gameObject);   
     }
 
 }

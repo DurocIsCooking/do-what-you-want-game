@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+// This script is on an explosion prefab created by missiles. It controls their expansion and retraction (aka implosion).
 public class Explosion : MonoBehaviour
 {
 
@@ -23,7 +24,7 @@ public class Explosion : MonoBehaviour
         _radius = Random.Range(_minRadius, _maxRadius);
     }
 
-
+    // First, expand the explosion (according to explosionTimer), then reduce it (according to implosionTimer)
     private void Update()
     {
         // Use dotween for explosion growth rate
@@ -43,6 +44,7 @@ public class Explosion : MonoBehaviour
         
     }
 
+    // Reduce explosion size
     private void Implosion()
     {
         // Use dotween for implosion rate

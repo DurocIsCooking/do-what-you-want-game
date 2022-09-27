@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Controls individual missiles.
 public class Enemy : MonoBehaviour
 {
-
     // Used the following tutorial for having enemies rotate towards the player:
     // https://www.youtube.com/watch?v=mKLp-2iseDc&ab_channel=KristerCederlund
 

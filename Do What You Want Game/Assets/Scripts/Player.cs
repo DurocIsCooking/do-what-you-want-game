@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Handles player controls, movement, and collisions
 public class Player : MonoBehaviour
 {
-
     private bool _movingUp = false;
     private bool _movingDown = false;
     private bool _movingLeft = false;
@@ -115,19 +115,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    // If the player touches an explosion, game over. Explosions are the only type of trigger zone
     private void OnTriggerEnter2D(Collider2D col)
     {
-        // If the player touches an explosion, game over
-
         // Game over UI
         UIManager.GameOver();
         // Destroy player
         Destroy(gameObject);
     }
 
+    // If the player is hit by a missile, game over
     private void OnCollisionEnter2D(Collision2D col)
     {
-        // If the player is hit by a missile, game over
         if (col.collider.tag == "Enemy")
         {
             // Game over UI

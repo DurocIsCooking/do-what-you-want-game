@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
+// Displays score, upgrade, and game over text
 public class UIManager : MonoBehaviour
 {
 

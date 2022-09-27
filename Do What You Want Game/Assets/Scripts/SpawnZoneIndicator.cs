@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+// The spawnZoneIndicator is a sprite that appears when an enemy is about to spawn, warning the player. This script controls its visual fade and destroys it.
 public class SpawnZoneIndicator : MonoBehaviour
 {
     private float _lifespan;

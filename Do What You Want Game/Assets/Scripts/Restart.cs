@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class Restart : MonoBehaviour
 {
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))       
@@ -13,6 +12,4 @@ public class Restart : MonoBehaviour
             SceneManager.LoadScene(0);
         }
     }
-
-    
 }
