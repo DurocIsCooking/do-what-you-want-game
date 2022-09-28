@@ -22,6 +22,8 @@ public class Explosion : MonoBehaviour
     {
         // Randomly determine explosion size within a range
         _radius = Random.Range(_minRadius, _maxRadius);
+        // Add to list of objects to destroy on restart
+        MenuManager.Instance.DestroyOnRestart.Add(gameObject);
     }
 
     // First, expand the explosion (according to explosionTimer), then reduce it (according to implosionTimer)

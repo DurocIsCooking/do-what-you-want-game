@@ -30,7 +30,7 @@ public class Enemy : MonoBehaviour
         _movementTarget = gameObject.transform.GetChild(0);
         _movementSpeed = EnemyManager.EnemySpeed;
         _rotationSpeed = EnemyManager.EnemyRotationSpeed;
-        _player = EnemyManager.player;
+        _player = EnemyManager.Instance.Player;
 
         // Spawn the enemy facing a random direction
         transform.Rotate(0, 0, Random.Range(0, 360), Space.Self);
@@ -99,7 +99,7 @@ public class Enemy : MonoBehaviour
     private void Explode()
     {
         // Increment score
-        ScoreManager.Score = ScoreManager.Score + 1;
+        ScoreManager.Instance.IncrementScore();
         // Spawn explosion
         Instantiate(_explosion, transform.position, Quaternion.identity);
         // Destroy enemy

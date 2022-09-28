@@ -118,10 +118,7 @@ public class Player : MonoBehaviour
     // If the player touches an explosion, game over. Explosions are the only type of trigger zone
     private void OnTriggerEnter2D(Collider2D col)
     {
-        // Game over UI
-        UIManager.GameOver();
-        // Destroy player
-        Destroy(gameObject);
+        Die();
     }
 
     // If the player is hit by a missile, game over
@@ -129,10 +126,13 @@ public class Player : MonoBehaviour
     {
         if (col.collider.tag == "Enemy")
         {
-            // Game over UI
-            UIManager.GameOver();
-            // Destroy player
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        MenuManager.Instance.GameOver();
+        Destroy(gameObject);
     }
 }

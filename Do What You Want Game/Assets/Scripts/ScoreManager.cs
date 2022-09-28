@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
-// Tracks score and calls upgrades
+// Tracks score, displays score and upgrade text
 public class ScoreManager : MonoBehaviour
 {
 
@@ -27,63 +26,84 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    // Score
+    [HideInInspector] public int Score;
+    // Text elements
+    public GameObject InGameUI;
+    public Text ScoreText;
+    public Text UpgradeText;
+
     private void Awake()
     {
         // Singleton
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+        ResetScore();
     }
 
-    // Text elements
-    private static int _score;
-
-    public static Text _gameOverText;
-
-    public static int Score
+    public void SetUpgradeText(string upgradeText)
     {
-        get
+            // Display text
+            UpgradeText.color = new Color(1, 1, 1, 1);
+            UpgradeText.text = upgradeText;
+
+            // Fade text out
+            Instance.Invoke("FadeUpgradeText", 1);
+        
+    }
+
+    // Fades out upgrade text over time
+    private void FadeUpgradeText()
+    {
+        UpgradeText.DOColor(new Color(1, 1, 1, 0), 3);
+    }
+
+    public void ShowUI(bool showText)
+    {
+        InGameUI.SetActive(showText);
+    }
+
+    public void IncrementScore()
+    {
+        Score += 1;
+
+        // Change score text
+        ScoreText.text = "Score: " + Score;
+
+        //At certain intervals, increase difficulty
+        if (Score == 5 || Score == 15 || Score == 30)
         {
-            return _score;
+            // Make enemies spawn more quickly
+            EnemyManager.SpawnInterval = EnemyManager.SpawnInterval - 1.5f;
+            SetUpgradeText("Enemy spawn rate increased!");
         }
 
-        set
+        if (Score == 25 || Score == 50)
         {
-            // Increase score
-            _score = value;
+            // Increase explosion size
+            Explosion.UpgradeExplosion();
+            SetUpgradeText("Explosion size increased!");
+        }
 
-            // Display score
-            UIManager.ScoreText = "Score: " + _score;
+        if (Score == 10)
+        {
+            // Make enemies more maneuverable
+            EnemyManager.EnemyRotationSpeed = EnemyManager.EnemyRotationSpeed + 1f;
+            SetUpgradeText("Enemy maneuverability increased!");
+        }
 
-            //At certain intervals, increase difficulty
-            if (_score == 5 || _score == 15 || _score == 30)
-            {
-                // Make enemies spawn more quickly
-                EnemyManager.SpawnInterval = EnemyManager.SpawnInterval - 1.5f;
-                UIManager.UpgradeText = "Enemy spawn rate increased!";
-            }
-
-            if (_score == 25 || _score == 50)
-            {
-                // Increase explosion size
-                Explosion.UpgradeExplosion();
-                UIManager.UpgradeText = "Explosion size increased!";
-            }
-
-            if (_score == 10)
-            {
-                // Make enemies more maneuverable
-                EnemyManager.EnemyRotationSpeed = EnemyManager.EnemyRotationSpeed + 1f;
-
-                UIManager.UpgradeText = "Enemy maneuverability increased!";
-            }
-
-            if (_score == 20 || _score == 100)
-            {
-                // Increase enemy speed
-                EnemyManager.EnemySpeed = EnemyManager.EnemySpeed + 0.1f;
-                UIManager.UpgradeText = "Enemy speed increased!";
-            }
+        if (Score == 20 || Score == 100)
+        {
+            // Increase enemy speed
+            EnemyManager.EnemySpeed = EnemyManager.EnemySpeed + 0.1f;
+            SetUpgradeText("Enemy speed increased!");
         }
     }
 
+    public void ResetScore()
+    {
+        Score = 0;
+        ScoreText.text = "Score: " + 0;
+        UpgradeText.text = "";
+        ShowUI(true);
+    }
 }

@@ -11,9 +11,6 @@ public class EnemyManager : MonoBehaviour
     private static float _enemySpeed;
     private static float _enemyRotationSpeed;
     
-    // Player object
-    private static GameObject _player;
-    
     // Used for spawning enemies in random locations
     [SerializeField]
     private static float _spawnZoneHeight = 8;
@@ -27,9 +24,10 @@ public class EnemyManager : MonoBehaviour
     // Used to control frequency of enemy spawns
     private static float _spawnInterval;
     private float _spawnTimer;
-    [SerializeField]
-    private GameObject _spawnZoneIndicator;
+    [SerializeField] private GameObject _spawnZoneIndicator;
     private GameObject _currentSpawnZone = null;
+
+    [HideInInspector] public GameObject Player;
 
     // Getters & setters (we want to change these values as the player scores points, to increase difficulty)
     public static float EnemySpeed
@@ -75,14 +73,6 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    public static GameObject player
-    {
-        get
-        {
-            return _player;
-        }
-    }
-
     // Singleton pattern
     private static EnemyManager _instance;
 
@@ -106,29 +96,18 @@ public class EnemyManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        // Set enemy speed values
-        _enemySpeed = 0.2f;
-        _enemyRotationSpeed = 2f;
-
-        // Find player
-        _player = GameObject.Find("Player");
-
-        // Set starting timer values
-        _spawnTimer = 0;
-        _spawnInterval = 5;
     }
 
     private void Update()
     {
         // Periodically spawn enemies
         _spawnTimer += Time.deltaTime;
+        //Debug.Log("Timer " + _spawnTimer + " Interval: " + SpawnInterval);
         if(_spawnTimer >= _spawnInterval)
         {
             _spawnTimer = 0;
 
-            if(player != null)
+            if(Player != null)
             {
                 BeginEnemySpawn();
             }
@@ -176,7 +155,7 @@ public class EnemyManager : MonoBehaviour
         }
         
         // Check if player is within selected spawnzone
-        if (player.transform.position.x > _spawnRangeX.min && player.transform.position.x < _spawnRangeX.max && player.transform.position.y > _spawnRangeY.min && player.transform.position.y < _spawnRangeY.max)
+        if (Player.transform.position.x > _spawnRangeX.min && Player.transform.position.x < _spawnRangeX.max && Player.transform.position.y > _spawnRangeY.min && Player.transform.position.y < _spawnRangeY.max)
         {
             // If so, we need to select a different spawnzone. We do not want the spawnzone to appear on top of the player, this is too difficult when the spawn rate is high.
             BeginEnemySpawn();
@@ -196,9 +175,21 @@ public class EnemyManager : MonoBehaviour
         _spawnPosX = Random.Range(_spawnRangeX.min, _spawnRangeX.max);
         _spawnPosY = Random.Range(_spawnRangeY.min, _spawnRangeY.max);
         // Spawn enemy
-        Instantiate(_enemy, new Vector3(_spawnPosX, _spawnPosY, 0), Quaternion.identity);
+        GameObject newMissile = Instantiate(_enemy, new Vector3(_spawnPosX, _spawnPosY, 0), Quaternion.identity);
+        // Add enemy to list of objects to destroy on restart
+        MenuManager.Instance.DestroyOnRestart.Add(newMissile);
         // Remove spawn zone
         _currentSpawnZone = null;
     }
 
+    public void ResetValues()
+    {
+        // Set enemy speed values
+        _enemySpeed = 0.2f;
+        _enemyRotationSpeed = 2f;
+
+        // Set starting timer values
+        _spawnTimer = 0;
+        _spawnInterval = 5;
+    }
 }

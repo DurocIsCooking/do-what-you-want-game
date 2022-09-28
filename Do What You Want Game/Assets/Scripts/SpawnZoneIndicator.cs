@@ -20,6 +20,8 @@ public class SpawnZoneIndicator : MonoBehaviour
         // Set colour to transparent
         transform.GetComponent<SpriteRenderer>().color = new Color(1, 0.5f, 0.5f, 0);
         transform.Find("OuterEdge").GetComponent<SpriteRenderer>().color = new Color();
+        // Add to list of objects to destroy on restart
+        MenuManager.Instance.DestroyOnRestart.Add(gameObject);
     }
 
     private void Update()
